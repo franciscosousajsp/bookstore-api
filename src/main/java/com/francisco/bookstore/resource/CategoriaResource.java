@@ -1,5 +1,9 @@
 package com.francisco.bookstore.resource;
 
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,10 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.francisco.bookstore.domian.Categoria;
+import com.francisco.bookstore.dtos.CategoriaDTO;
 import com.francisco.bookstore.service.CategoriaService;
 
 @RestController
-@RequestMapping(value = "/categoria")
+@RequestMapping(value = "/categorias")
 public class CategoriaResource {
 
 	@Autowired
@@ -22,5 +27,13 @@ public class CategoriaResource {
 		
 		Categoria obj = service.findById(id);	
 		return ResponseEntity.ok().body(obj);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<CategoriaDTO>> findAll(){
+		
+		List<Categoria> list = service.findAll();
+		List<CategoriaDTO> listDTO = list.stream().map(obj -> new CategoriaDTO(obj)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listDTO);	
 	}
 } 
